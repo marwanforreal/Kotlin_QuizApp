@@ -11,6 +11,6 @@ class QuizzQuestionsActivity : AppCompatActivity() {
 
         val questionsList = Constants.getQuestion();
 
-        Log.i("numbers of text", "${questionsList.size}");
+        //Log.i("numbers of text", "${questionsList.size}");
     }
 }
