@@ -8,7 +8,7 @@ object Constants {
         val questionOne = Question(
             1,
             "Where is Georgia Located?",
-            R.drawable.ic_launcher_foreground,
+            R.drawable.egypy,
             "Asia",
             "Europe",
             "Africa",
@@ -19,7 +19,7 @@ object Constants {
         val questionTwo = Question(
             2,
             "Where is Jordan Located?",
-            R.drawable.ic_launcher_foreground,
+            R.drawable.egypy,
             "South America",
             "Europe",
             "Africa",
