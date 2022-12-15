@@ -6,17 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 
 class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
     private var myCurrentPosition : Int = 1;
     private var questionsList:ArrayList<Question>? = null;
-    private var mySelectedOptionSelected : Int? = null;
+    private var mySelectedOptionSelected : Int = 0;
 
     private var progressBar : ProgressBar? = null;
     private var tvProgess : TextView? = null;
@@ -42,6 +39,7 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         optionTwo = findViewById(R.id.optionTwo);
         optionThree = findViewById(R.id.optionThree);
         optionFour = findViewById(R.id.optionFour);
+        submitButton = findViewById(R.id.btn_submit);
 
         optionOne?.setOnClickListener(this);
         optionTwo?.setOnClickListener(this);
@@ -49,7 +47,6 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         optionFour?.setOnClickListener(this);
         submitButton?.setOnClickListener(this);
 
-        submitButton = findViewById(R.id.btn_submit);
 
         setQuestion();
         defaultOptionsView();
@@ -57,6 +54,7 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setQuestion() {
+        defaultOptionsView();
         val question: Question = questionsList!![myCurrentPosition - 1];
 
         imageView?.setImageResource(question.image);
@@ -120,13 +118,59 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         )
     }
 
+    private fun answerView(answer: Int, drawableView : Int){
+        when(answer){
+            1 -> {
+                optionOne?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+
+            2 -> {
+                optionTwo?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+
+            3 -> {
+                optionThree?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+            4 -> {
+                optionFour?.background = ContextCompat.getDrawable(
+                    this,
+                    drawableView
+                )
+            }
+        };
+    }
+
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.optionOne -> { optionOne?.let { selectedOptionView(it, 1); } }
             R.id.optionTwo -> { optionTwo?.let { selectedOptionView(it, 2); } }
             R.id.optionThree -> { optionThree?.let { selectedOptionView(it, 3); } }
             R.id.optionFour -> { optionFour?.let { selectedOptionView(it, 4); } }
-            R.id.btn_submit -> {//TODO
+            R.id.btn_submit -> {
+                if(mySelectedOptionSelected == 0){
+                    myCurrentPosition++;
+                    when{ myCurrentPosition <= questionsList!!.size ->{ setQuestion()}
+                    else -> {Toast.makeText(this, "You're done'!", Toast.LENGTH_LONG).show()}}
+                } else {
+                    val question = questionsList?.get(myCurrentPosition - 1);
+                    if(question!!.correctAnswer != mySelectedOptionSelected){ answerView(mySelectedOptionSelected, R.drawable.wrong_option_border_bg) }
+                    answerView(question.correctAnswer, R.drawable.correct_option_border_bg);
+
+                    if(myCurrentPosition == questionsList!!.size){
+                        submitButton?.text = "FINISH"
+                    } else { submitButton?.text = "Next Question"}
+
+                    mySelectedOptionSelected = 0;
+                }
             }
         }
     }
