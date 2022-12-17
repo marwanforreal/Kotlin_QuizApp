@@ -1,5 +1,6 @@
 package com.example.quiz.marwanmkh
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
@@ -15,9 +16,12 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var questionsList:ArrayList<Question>? = null;
     private var mySelectedOptionSelected : Int = 0;
 
+    private var username : String? = null;
+
     private var progressBar : ProgressBar? = null;
     private var tvProgess : TextView? = null;
     private var questionString : TextView? = null;
+    private var correctAnswers : Int = 0;
     private var optionOne : TextView? = null;
     private var optionTwo : TextView? = null;
     private var optionThree : TextView? = null;
@@ -33,6 +37,8 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
         progressBar = findViewById(R.id.progress_bar);
         tvProgess = findViewById(R.id.tv_progress);
         questionString = findViewById(R.id.tv_question);
+
+        username = intent.getStringExtra(Constants.USER_NAME);
 
         imageView = findViewById(R.id.iv_image);
         optionOne = findViewById(R.id.optionOne);
@@ -159,10 +165,17 @@ class QuizzQuestionsActivity : AppCompatActivity(), View.OnClickListener {
                 if(mySelectedOptionSelected == 0){
                     myCurrentPosition++;
                     when{ myCurrentPosition <= questionsList!!.size ->{ setQuestion()}
-                    else -> {Toast.makeText(this, "You're done'!", Toast.LENGTH_LONG).show()}}
+                    else -> {
+                        val intent = Intent(this, Result::class.java)
+                        intent.putExtra(Constants.USER_NAME, username);
+                        intent.putExtra(Constants.CORRECT_ANSWERS, correctAnswers);
+                        intent.putExtra(Constants.TOTAL_QUESTION, questionsList?.size);
+                        startActivity(intent);
+                        finish();
+                    }}
                 } else {
                     val question = questionsList?.get(myCurrentPosition - 1);
-                    if(question!!.correctAnswer != mySelectedOptionSelected){ answerView(mySelectedOptionSelected, R.drawable.wrong_option_border_bg) }
+                    if(question!!.correctAnswer != mySelectedOptionSelected){ answerView(mySelectedOptionSelected, R.drawable.wrong_option_border_bg) } else {correctAnswers++}
                     answerView(question.correctAnswer, R.drawable.correct_option_border_bg);
 
                     if(myCurrentPosition == questionsList!!.size){
